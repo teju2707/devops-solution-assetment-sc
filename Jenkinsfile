@@ -49,9 +49,15 @@ pipeline {
     }
     post {
         failure {
-            mail to: 'your-email@example.com',
-                 subject: "Pipeline failed: ${env.JOB_NAME} - ${env.BUILD_NUMBER}",
-                 body: "Something is wrong with ${env.JOB_NAME} - ${env.BUILD_NUMBER}. Please check the logs."
+            script {
+                try {
+                    mail to: 'your-email@example.com',
+                         subject: "Pipeline failed: ${env.JOB_NAME} - ${env.BUILD_NUMBER}",
+                         body: "Something is wrong with ${env.JOB_NAME} - ${env.BUILD_NUMBER}. Please check the logs."
+                } catch (Exception e) {
+                    echo "Failed to send email: ${e.message}"
+                }
+            }
         }
     }
 }
